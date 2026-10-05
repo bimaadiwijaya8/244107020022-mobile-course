@@ -1,28 +1,50 @@
-import 'package:path/path.dart' as p;
-import 'package:sqflite/sqflite.dart';
+class Note {
+  const Note({
+    this.id,
+    required this.title,
+    this.body = '',
+    required this.updatedAt,
+    this.dirty = false,
+  });
  
-Future<Database> openNotesDb() async {
-  final dir = await getDatabasesPath();
-  return openDatabase(
-    p.join(dir, 'offline_notes.db'),
-    version: 1,
-    onCreate: (db, version) async {
-      await db.execute('''
-        CREATE TABLE notes(
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          title TEXT NOT NULL,
-          body TEXT NOT NULL DEFAULT '',
-          updated_at TEXT NOT NULL,
-          dirty INTEGER NOT NULL DEFAULT 0
-        )
-      ''');
-      await db.execute('''
-        CREATE TABLE cached_posts(
-          id INTEGER PRIMARY KEY,
-          payload TEXT NOT NULL,
-          cached_at TEXT NOT NULL
-        )
-      ''');
-    },
-  );
+  final int? id;
+  final String title;
+  final String body;
+  final DateTime updatedAt;
+  final bool dirty;
+ 
+  Note copyWith({
+    int? id,
+    String? title,
+    String? body,
+    DateTime? updatedAt,
+    bool? dirty,
+  }) {
+    return Note(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      updatedAt: updatedAt ?? this.updatedAt,
+      dirty: dirty ?? this.dirty,
+    );
+  }
+ 
+  Map<String, Object?> toMap() => {
+        'id': id,
+        'title': title,
+        'body': body,
+        'updated_at': updatedAt.toIso8601String(),
+        'dirty': dirty ? 1 : 0,
+      };
+ 
+  factory Note.fromMap(Map<String, Object?> map) {
+    return Note(
+      id: (map['id'] as num?)?.toInt(),
+      title: map['title'] as String? ?? '',
+      body: map['body'] as String? ?? '',
+      updatedAt: DateTime.tryParse(map['updated_at'] as String? ?? '') ??
+          DateTime.fromMillisecondsSinceEpoch(0),
+      dirty: ((map['dirty'] as num?)?.toInt() ?? 0) == 1,
+    );
+  }
 }
