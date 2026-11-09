@@ -3,6 +3,8 @@
 Flutter project untuk latihan Firebase Cloud Messaging, local notification, dan
 deep link ke halaman pengumuman.
 
+> 📘 **Dokumentasi Arsitektur:** Proyek ini menggunakan **Clean Architecture (Layer-First)** dengan penerapan prinsip **SOLID** (`domain/`, `data/`, `presentation/`). Detail lengkap dapat dibaca di [ARCHITECTURE.md](ARCHITECTURE.md).
+
 ## Pengujian FCM
 
 Gunakan payload yang sama untuk menguji ketiga kondisi aplikasi. Ganti topik atau
